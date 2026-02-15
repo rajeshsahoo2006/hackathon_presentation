@@ -588,11 +588,14 @@
   .summary-stat .big-num {
     font-size: 42px;
     font-weight: 900;
+    line-height: 1.2;
+  }
+
+  .summary-stat .big-num.gradient-text {
     background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    line-height: 1.2;
   }
 
   .summary-stat .stat-text {
@@ -731,17 +734,17 @@
       <div class="team-card">
         <img src="Rajesh Sahoo.png" alt="Rajesh Sahoo" class="team-avatar-img" />
         <h3>Rajesh Sahoo</h3>
-        <div class="role">Forward Deployed Engineer</div>
+        <div class="role">Developer</div>
       </div>
       <div class="team-card">
         <img src="Rajesh Boddu.jpeg" alt="Rajesh Boddu" class="team-avatar-img" />
         <h3>Rajesh Boddu</h3>
-        <div class="role">Forward Deployed Engineer</div>
+        <div class="role">Developer</div>
       </div>
       <div class="team-card">
         <img src="Sai.jpeg" alt="Sai Srinivasu Mallela" class="team-avatar-img" />
         <h3>Sai Srinivasu Mallela</h3>
-        <div class="role">Forward Deployed Engineer</div>
+        <div class="role">Developer</div>
       </div>
     </div>
   </div>
@@ -904,39 +907,31 @@
     <div class="bg-glow glow-2"></div>
 
     <div class="slide-tag">Executive Summary</div>
-    <h2 class="section-title">Impact & What's Next</h2>
+    <h2 class="section-title">What We Deliver & What's Next</h2>
 
     <div class="summary-grid">
       <div class="summary-stat">
-        <div class="big-num">10×</div>
-        <div class="stat-text">Faster error identification with AI-powered log analysis</div>
+        <div class="big-num">⚡</div>
+        <div class="stat-text"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077ff" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Real-time monitoring & AI analysis of Apex logs as they stream — no manual scanning</div>
       </div>
       <div class="summary-stat">
-        <div class="big-num">Zero</div>
-        <div class="stat-text">Context switching — stream, analyze, and fix all in one place</div>
+        <div class="big-num">🔄</div>
+        <div class="stat-text"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077ff" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M8 21H3v-5"/><path d="M3 21l7-7"/></svg>Multi-org switching from a single dashboard — jump between orgs without leaving Debugfast</div>
       </div>
       <div class="summary-stat">
-        <div class="big-num">2 min</div>
-        <div class="stat-text">Setup time — plug into any authenticated Salesforce org</div>
+        <div class="big-num">📊</div>
+        <div class="stat-text"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077ff" stroke-width="2" stroke-linecap="round" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="8" width="4" height="13"/><rect x="17" y="3" width="4" height="18"/></svg>Summarized Salesforce insights — governor limits, SOQL usage, CPU time & best practice violations at a glance</div>
       </div>
     </div>
 
     <div class="next-steps">
       <div class="next-step-item">
         <div class="ns-bullet"></div>
-        <div class="ns-text"><strong>Governor Limit Monitoring</strong> — Proactive alerts before limits are hit</div>
+        <div class="ns-text"><strong>Salesforce MCP Integration</strong> — Expose Debugfast diagnostics as an MCP tool, enabling AI agents to autonomously detect, diagnose, and resolve issues</div>
       </div>
       <div class="next-step-item">
         <div class="ns-bullet"></div>
-        <div class="ns-text"><strong>Salesforce MCP Tool</strong> — Expose diagnostics as a tool via Salesforce MCP for agentic workflows</div>
-      </div>
-      <div class="next-step-item">
-        <div class="ns-bullet"></div>
-        <div class="ns-text"><strong>Fix Suggestions</strong> — AI-generated code patches with one-click apply</div>
-      </div>
-      <div class="next-step-item">
-        <div class="ns-bullet"></div>
-        <div class="ns-text"><strong>Historical Analytics</strong> — Track error trends across deployments and orgs</div>
+        <div class="ns-text"><strong>Intelligent Fix Suggestions</strong> — AI-generated Apex code patches with one-click apply, turning diagnosis into resolution in seconds</div>
       </div>
     </div>
 
