@@ -349,13 +349,20 @@
     opacity: 0;
     transform: translateY(15px);
     transition: all 0.5s 0.7s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(229, 54, 75, 0.06), rgba(245, 158, 11, 0.06));
+    border: 1px solid rgba(229, 54, 75, 0.15);
+    border-radius: 14px;
+    padding: 16px 28px;
   }
 
   .active .stat-callout { opacity: 1; transform: translateY(0); }
 
   .stat-number {
-    font-size: clamp(40px, 5vw, 72px);
-    font-weight: 900;
+    font-size: 28px;
+    font-weight: 800;
     background: linear-gradient(135deg, var(--accent-red), var(--accent-yellow));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -366,8 +373,8 @@
   .stat-label {
     font-size: 14px;
     color: var(--text-muted);
-    margin-top: 6px;
     font-weight: 400;
+    text-align: left;
   }
 
   /* ─── ARCHITECTURE ─── */
@@ -668,6 +675,24 @@
     opacity: 0.9;
   }
 
+  /* ─── AGENTFORCE MASCOT ─── */
+  .agentforce-mascot {
+    position: fixed;
+    bottom: 16px;
+    left: 24px;
+    width: 80px;
+    height: 80px;
+    z-index: 99;
+    opacity: 0.85;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+
+  .agentforce-mascot:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
   /* ─── LOGOS ─── */
   .sf-logo {
     position: fixed;
@@ -712,6 +737,8 @@
   <kbd>←</kbd><kbd>→</kbd> or click to navigate
 </div>
 
+<img src="agentforce.gif" alt="Agentforce" class="agentforce-mascot" />
+
 <div class="deck" id="deck">
 
   <!-- ═══════════════════════ SLIDE 1: TITLE ═══════════════════════ -->
@@ -734,17 +761,17 @@
       <div class="team-card">
         <img src="Rajesh Sahoo.png" alt="Rajesh Sahoo" class="team-avatar-img" />
         <h3>Rajesh Sahoo</h3>
-        <div class="role">Developer</div>
+        <div class="role">Forward Deployed Engineer</div>
       </div>
       <div class="team-card">
         <img src="Rajesh Boddu.jpeg" alt="Rajesh Boddu" class="team-avatar-img" />
         <h3>Rajesh Boddu</h3>
-        <div class="role">Developer</div>
+        <div class="role">Forward Deployed Engineer</div>
       </div>
       <div class="team-card">
         <img src="Sai.jpeg" alt="Sai Srinivasu Mallela" class="team-avatar-img" />
         <h3>Sai Srinivasu Mallela</h3>
-        <div class="role">Developer</div>
+        <div class="role">Forward Deployed Engineer</div>
       </div>
     </div>
   </div>
