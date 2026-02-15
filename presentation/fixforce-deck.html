@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debugfast — Team Fixforce | Hackathon 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #edf2f9;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f5f8fc;
+    --accent-cyan: #0077ff;
+    --accent-blue: #0052cc;
+    --accent-red: #e5364b;
+    --accent-yellow: #f59e0b;
+    --accent-purple: #6c3ce9;
+    --accent-agent: #00c2ff;
+    --text-primary: #1a2233;
+    --text-muted: #5a6a7e;
+    --text-dim: #94a3b8;
+    --font-display: 'Outfit', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-display);
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ─── SLIDE CONTAINER ─── */
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  /* ─── BACKGROUND EFFECTS ─── */
+  .bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 119, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 119, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  .glow-1 { width: 500px; height: 500px; background: var(--accent-cyan); top: -150px; right: -100px; opacity: 0.08; }
+  .glow-2 { width: 400px; height: 400px; background: var(--accent-agent); bottom: -100px; left: -100px; opacity: 0.07; }
+  .glow-3 { width: 300px; height: 300px; background: var(--accent-blue); top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.06; }
+
+  /* ─── NAVIGATION ─── */
+  .nav-bar {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    padding: 10px 20px;
+    border-radius: 40px;
+    border: 1px solid rgba(0, 119, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 82, 204, 0.08);
+  }
+
+  .nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+  }
+
+  .nav-dot.active {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(0, 119, 255, 0.4);
+    width: 30px;
+    border-radius: 5px;
+  }
+
+  .nav-dot:hover:not(.active) { background: var(--text-muted); }
+
+  .slide-counter {
+    position: fixed;
+    top: 30px;
+    right: 40px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    z-index: 100;
+    letter-spacing: 2px;
+  }
+
+  .key-hint {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .key-hint kbd {
+    background: rgba(0,119,255,0.06);
+    border: 1px solid rgba(0,119,255,0.15);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ─── TYPOGRAPHY ─── */
+  .slide-tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s 0.2s ease;
+  }
+
+  .active .slide-tag { opacity: 1; transform: translateY(0); }
+
+  h1.hero-title {
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -3px;
+    text-align: center;
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .active h1.hero-title { opacity: 1; transform: translateY(0); }
+
+  h1.hero-title .highlight {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h2.section-title {
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    text-align: center;
+    margin-bottom: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .active h2.section-title { opacity: 1; transform: translateY(0); }
+
+  .subtitle {
+    font-size: clamp(16px, 2vw, 22px);
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 700px;
+    line-height: 1.6;
+    font-weight: 300;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.5s 0.5s ease;
+  }
+
+  .active .subtitle { opacity: 1; transform: translateY(0); }
+
+  /* ─── TEAM CARDS ─── */
+  .team-grid {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s 0.5s ease;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .active .team-grid { opacity: 1; transform: translateY(0); }
+
+  .team-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 248, 252, 0.95));
+    border: 1px solid rgba(0, 119, 255, 0.12);
+    border-radius: 16px;
+    padding: 32px 36px;
+    min-width: 220px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 82, 204, 0.06);
+  }
+
+  .team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-agent));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .team-card:hover::before { opacity: 1; }
+  .team-card:hover { border-color: rgba(0, 119, 255, 0.3); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1); }
+
+  .team-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--bg-deep);
+  }
+
+  .team-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .team-card .role {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+  }
+
+  /* ─── PROBLEM CARDS ─── */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1000px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s 0.5s ease;
+  }
+
+  .active .problem-grid { opacity: 1; transform: translateY(0); }
+
+  .problem-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 248, 252, 0.9));
+    border: 1px solid rgba(229, 54, 75, 0.15);
+    border-radius: 16px;
+    padding: 28px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  }
+
+  .problem-card:hover {
+    border-color: rgba(229, 54, 75, 0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(229, 54, 75, 0.08);
+  }
+
+  .problem-icon {
+    font-size: 32px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .problem-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--accent-red);
+  }
+
+  .problem-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .stat-callout {
+    margin-top: 32px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.5s 0.7s ease;
+  }
+
+  .active .stat-callout { opacity: 1; transform: translateY(0); }
+
+  .stat-number {
+    font-size: clamp(40px, 5vw, 72px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-red), var(--accent-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  /* ─── ARCHITECTURE ─── */
+  .arch-container {
+    max-width: 1000px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s 0.5s ease;
+  }
+
+  .active .arch-container { opacity: 1; transform: translateY(0); }
+
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .arch-node {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 248, 252, 0.9));
+    border: 1px solid rgba(0, 119, 255, 0.15);
+    border-radius: 14px;
+    padding: 20px 24px;
+    text-align: center;
+    min-width: 150px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 82, 204, 0.06);
+  }
+
+  .arch-node:hover {
+    border-color: rgba(0, 119, 255, 0.4);
+    transform: scale(1.03);
+    box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1);
+  }
+
+  .arch-node .node-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .arch-node .node-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .arch-node .node-detail { font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); }
+
+  .arch-arrow {
+    font-size: 20px;
+    color: var(--accent-cyan);
+    opacity: 0.6;
+  }
+
+  .arch-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 36px;
+  }
+
+  .feature-pill {
+    background: rgba(0, 119, 255, 0.04);
+    border: 1px solid rgba(0, 119, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .feature-pill:hover { background: rgba(0, 119, 255, 0.08); border-color: rgba(0, 119, 255, 0.25); }
+  .feature-pill .fp-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .feature-pill .fp-desc { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+  /* ─── DEMO SLIDE ─── */
+  .demo-container {
+    max-width: 900px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s 0.5s ease;
+  }
+
+  .active .demo-container { opacity: 1; transform: translateY(0); }
+
+  .demo-terminal {
+    background: #0d1117;
+    border: 1px solid rgba(0, 119, 255, 0.2);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 52, 120, 0.2);
+  }
+
+  .terminal-bar {
+    background: #161b22;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .terminal-dot.red { background: #ff5f57; }
+  .terminal-dot.yellow { background: #febc2e; }
+  .terminal-dot.green { background: #28c840; }
+
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-left: 12px;
+  }
+
+  .terminal-body {
+    padding: 24px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.8;
+    min-height: 280px;
+  }
+
+  .term-line { margin-bottom: 4px; }
+  .term-prompt { color: #58a6ff; }
+  .term-cmd { color: #f0f4f8; }
+  .term-output { color: #8b949e; }
+  .term-success { color: #3fb950; }
+  .term-error { color: #f85149; }
+  .term-warn { color: #d29922; }
+  .term-ai { color: #bc8cff; font-style: italic; }
+
+  /* ─── AGENTIC PULSE ─── */
+  @keyframes agentPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+  }
+
+  .agent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, rgba(0, 119, 255, 0.1), rgba(0, 194, 255, 0.1));
+    border: 1px solid rgba(0, 119, 255, 0.2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+    margin-top: 14px;
+  }
+
+  .agent-badge .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-agent);
+    animation: agentPulse 2s ease-in-out infinite;
+  }
+
+  .demo-steps {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    justify-content: center;
+  }
+
+  .demo-step {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 119, 255, 0.1);
+    border-radius: 10px;
+    padding: 14px 20px;
+    text-align: center;
+    flex: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 82, 204, 0.05);
+  }
+
+  .demo-step:hover, .demo-step.active-step {
+    border-color: rgba(0, 119, 255, 0.35);
+    background: rgba(0, 119, 255, 0.06);
+  }
+
+  .demo-step .step-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-cyan);
+    margin-bottom: 4px;
+  }
+
+  .demo-step .step-label {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* ─── EXECUTIVE SUMMARY ─── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 900px;
+    width: 100%;
+    margin-bottom: 36px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s 0.5s ease;
+  }
+
+  .active .summary-grid { opacity: 1; transform: translateY(0); }
+
+  .summary-stat {
+    text-align: center;
+    padding: 28px 20px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 248, 252, 0.9));
+    border: 1px solid rgba(0, 119, 255, 0.12);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 82, 204, 0.06);
+  }
+
+  .summary-stat:hover { border-color: rgba(0, 119, 255, 0.3); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1); }
+
+  .summary-stat .big-num {
+    font-size: 42px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+
+  .summary-stat .stat-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    line-height: 1.4;
+  }
+
+  .next-steps {
+    max-width: 700px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.5s 0.7s ease;
+  }
+
+  .active .next-steps { opacity: 1; transform: translateY(0); }
+
+  .next-step-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(0, 119, 255, 0.06);
+  }
+
+  .next-step-item:last-child { border-bottom: none; }
+
+  .ns-bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    flex-shrink: 0;
+  }
+
+  .ns-text {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .ns-text strong { color: var(--text-primary); font-weight: 600; }
+
+  .closing-line {
+    margin-top: 40px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s 0.9s ease;
+  }
+
+  .active .closing-line { opacity: 1; transform: translateY(0); }
+
+  .closing-line p {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent-cyan);
+    letter-spacing: 2px;
+  }
+
+  /* ─── LOGO ─── */
+  .brand-mark {
+    position: fixed;
+    top: 28px;
+    left: 40px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--bg-deep);
+  }
+
+  .brand-name {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  /* ─── LOGOS ─── */
+  .sf-logo {
+    position: fixed;
+    top: 22px;
+    right: 100px;
+    height: 36px;
+    z-index: 100;
+    opacity: 0.85;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.08));
+  }
+
+  .cursor-logo {
+    height: 28px;
+    opacity: 0.85;
+    vertical-align: middle;
+    margin-left: 4px;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.06));
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .slide { padding: 40px 24px; }
+    .problem-grid, .arch-features, .summary-grid { grid-template-columns: 1fr; }
+    .arch-flow { flex-direction: column; }
+    .arch-arrow { transform: rotate(90deg); }
+    .demo-steps { flex-direction: column; }
+    .team-grid { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-mark">
+  <div class="brand-icon">D</div>
+  <span class="brand-name">Debugfast</span>
+</div>
+
+<div class="slide-counter" id="slideCounter">01 / 05</div>
+
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAbFBMVEX///8XnNcAmdYAltUAldUHmtZzvOMAk9RltuJPrN3f7vgen9io1OwAktSXy+lRr97P5/Py+ft7v+Oazemz2e7E4vG73vCMxubX6/Qso9ns9vvn8/m02u0ootlruOD4/P2Sx+nK5fNRrN2Fw+TvV6obAAAIaElEQVR4nO2di7aiOgyGJWm4CIqKIojK9vj+73gairftBbxtrJNvrVnL0crQ3zRN05Jp9QRBEARBEARBEARBEARBEARBEARBEARBEARBEARBEIRXsMjS6XS6nBXjru/kwykiP0SFBsi3s65v6GMpo8BDImcPAaKbdX1bn0iZOHgk1A5Qwehy+2Kkh2s6Kv74Pj+B5UWpKvtS/uJ362wYOPVgRSdO/i3rG8fqilSVdXnRSeMkVHAYrkSgVlHZ1a3/OSMHrkvFqPW+bTmHcxskhKTD+/9LlrfMqjauvDad2ZXhShhuuu3F3xCpJqlYrVUVdrnXdSU16bon7yf1WmhlbGuc460mGHy758ra2FWlVrwIG1xbbX5fy9hp9Fc7CBqbUvjVtrVuMJY7gaDrDr2RtO0gbAu6h4svstFmlH1PiN9+ELZFpXzdfuTmqHhJrv+s1l8R40c3Z7eHIOgVwxzxyMFxjB9OLi8xLSJ8uWFpaVZ4YSbQeuXLrrv7FOnrDYt1ufY+5jbnx/w3GNYtSPnWBmLjtxjWTQDTrnv9IO8ZhQ3gtutuP8b2tQFpW7Xirvv9EPkfu6waO6P8LkZhpZaFtrV49VKnNcdrIktonZx5g1pR8+19FllXw5DV6nfd+zsZdSgW5V33/k66FMtBy3aD+t35LFbLrpxqd7MhA/Ou+38fXQ5Dh8gu0wq6ieBrLAsfmteGBI07OgSXcn0tILtWPbMmp0W5665uKkHoR9PoMRNVVm1llE2WBXpZsr4lBEGVWZ88lL6wrJakadOQxbqZTeVUXj/NHkv1kF3r6aawtEksjsNnA3x0VsWu+38Xxx4eYO/Maff6IBYdPjUfVy9Qx0pB9T4dpgLz19MLXZ4q0CKnlR2VsBEG8+E8JuA0ee7+/KxDPIhFmE9+3BWalvF8uA0QtF3xbs0qyMlBZ/2zjU3lVp47GKwDFiNc/+ivVdeMtz8+/BquaM9mz/So1IrAVKKN5wCTuoI0wZ1YFJoNUt6SpdDkCwoXsN6pyRCH5r1YK/if/iY3CQim5vO1njKra5bu6YC1J9JK1K/fuM+FxymC7sG4KlDYghGLQq1KMdIB9xSr3ErGLRMI6ytFA1al+kpMu+hpMUBWuOiXPQIussx4B98/sS0YdtDvRzjRilbcZfScRPc2j1ae8vKyV6ARi5WceIo7H3BGeDtAtYpyIo96vfnA4x2IPijP1xJBJdYooJCtLXMUDkIAbVS5UvqSixPTAks2ek7L/biHyYDYCxuvjKitpTTDkC1oNNAe3OGB6JpSyapWqx6lHD9wWKoibh3wfiRpxr2y8vMEEy2wIjMdHHt5sKOusjitoiWtQ2/mY/UuKT+azSJtR2GlBupBFAVxHOfj3gbZcJaxaclRpfbuatwbs/YcN0XcYIomqlgaO2Ixff39wP0Vvloi1u9NMDMgymWuPfRqn/GtxTryLNqXV055HHGEoMfnWHfeq9P5PJhTpcUasn3qQTk3yuBR/cwczv7VT+e80ghj0yM9vWtHPZtvh9mxWEXfEIFTn+Yp9YBSi0qlvVghTxCBUYTWe2WU/kL9/eIkxLXCwZd0HpUTOlxBVYK2iKEH1aGKWqwJ+/f6oBh3EcOtNr4+sjg84vQwXHi154v2YgX734QnCDJHzU4Lw60IHZIzwyJknz3QN5//GC+Me7FAe5+NV/u2XcuNdv/so3gNgBtT6MUm6EItlkN67jPasAFNTEB7+iOhDccMzkrYKMwCDyuxQve3ZQHqYbT1uOBRhwvBKFe6JXsrdjlxPSnqFaIKS1ZwJxYueVAqVMDTaRmwbTqn+R7v7ADV5zE7Myzudj8aptXSWgefmyRJFzuxTJy5mM1G5RhQx59ZNNzwAOTXle7swYsoLXmy24tFjg5ly80m6604Zuhl6SyrRu3hJ6KulWiBe5ZRod2ZwmJFEO/qzca7QAqC3Yo3B7+eK0dA2uLMngdRXXSlBxsvd4Zmmb2qq263gNs6314ciwU2bOJfqvjEYDhNo0pGIDeaThNXj7ldplQvnhP91kTbEb9cppGvXRdw3FV7nyCZRtvqAEbounVgopsOp1ES764ZJafpHrSgxrS4nEyGerKrQnj90mReDhmW3VvVS45JKdjZ0O5z0/QoF3N411zzl3+3oGTyNfV+RLy6eabCi8PWjyd5Rb0f+Cv3yT1tK7JZryiOrNPnz2w82lEacj4Z3g/HmWUWPHMlG9z7a8RywAmvHtdvBa+6LeAlYmkH/9zeP9pxlGf+ErGexIqAVBN9gFjWnHjddFppZPBsKSldtDtt/1atrJgJK27XxfwByqKKkK49vE1adXlYwOHNIxuSyQe6LI8EsCPA2rPsbD4kjC3Iy5zS0dk5bVbTrrt+P5suvBYBbC0JRU958UNV2iilwqF1I9BQvuOBDr/lAV5tM4DKmdiwR3iF4rHa9fbAOlkHoX4R5v58aVE95CVGT2WjGiGw0j1dY9P8oL8nUDYk2O+g3/SctSdAy458NVP67xqKuG7+163j2nM0n9XKhh3BB4hW6tXzIikrCvoeYuOGinfm+YwEvmKXDGx9NE87iul84se+O1/ed7yLzluD51oap9/P4p58BOXb08csE8La8vDzLu5ZNOK0N4584EFclc5DHFlQyvdCivamtStWyNJkPp8n6Tc8MPJO2peNKIuXxq+i7ZNL4RsDz3tpu51hy57ye2n1eHiy7jFFb2LbQi1PHFbNpPF5D9+WgXmG5Haui2zb+3svs1urRMz/rdizkbF/zbjg+xJ7zzPLL8kFyv+XVn/tmcVn/8+aciViuMYiivlUpVknY7heSiB6k7KfRslwmEw3MvwEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQRA643/IjGyy1SIwEAAAAABJRU5ErkJggg==" alt="Salesforce" class="sf-logo" />
+
+<div class="key-hint">
+  <kbd>←</kbd><kbd>→</kbd> or click to navigate
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ═══════════════════════ SLIDE 1: TITLE ═══════════════════════ -->
+  <div class="slide active" id="slide-0">
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="slide-tag">Team Fixforce — Hackathon 2025</div>
+    <h1 class="hero-title">
+      <span class="highlight">Debugfast</span><br>
+      Debug Smarter, Ship Faster
+    </h1>
+    <p class="subtitle">
+      AI-powered Apex log monitoring & analysis that transforms how Salesforce developers debug — from hours of scrolling to seconds of insight.
+    </p>
+    <div class="agent-badge"><span class="pulse-dot"></span> AI-AGENT POWERED</div>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">RS</div>
+        <h3>Rajesh Sahoo</h3>
+        <div class="role">Developer</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">RB</div>
+        <h3>Rajesh Boddu</h3>
+        <div class="role">Developer</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">SM</div>
+        <h3>Sai Srinivasu Mallela</h3>
+        <div class="role">Developer</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ SLIDE 2: PROBLEM ═══════════════════════ -->
+  <div class="slide" id="slide-1">
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-3"></div>
+
+    <div class="slide-tag">The Problem</div>
+    <h2 class="section-title">Debugging Apex is Broken</h2>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <span class="problem-icon">📜</span>
+        <h3>Wall of Text</h3>
+        <p>Debug logs can exceed 20MB of raw text. Developers manually scroll through thousands of lines hunting for FATAL_ERROR and EXCEPTION_THROWN markers.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🔄</span>
+        <h3>Context Switching</h3>
+        <p>Jump between Salesforce Setup, Developer Console, terminal, and IDE — each tool shows only a slice of the picture. Cognitive overload slows diagnosis.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">⏱️</span>
+        <h3>Time Drain</h3>
+        <p>Engineers spend 30–60% of debugging time just locating the error. On unfamiliar orgs, this multiplies further — burning hours before any fix begins.</p>
+      </div>
+    </div>
+
+    <div class="stat-callout">
+      <div class="stat-number">25%+</div>
+      <div class="stat-label">of developer time is spent on debugging & maintenance — not building features</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ SLIDE 3: DESIGN ═══════════════════════ -->
+  <div class="slide" id="slide-2">
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="slide-tag">Architecture</div>
+    <h2 class="section-title">How Debugfast Works</h2>
+
+    <div class="arch-container">
+      <div class="arch-flow">
+        <div class="arch-node">
+          <span class="node-icon">☁️</span>
+          <div class="node-label">Salesforce Org</div>
+          <div class="node-detail">sf apex tail log</div>
+        </div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">
+          <span class="node-icon">⚡</span>
+          <div class="node-label">Node.js Server</div>
+          <div class="node-detail">Real-time stream</div>
+        </div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">
+          <span class="node-icon">🤖</span>
+          <div class="node-label">AI Analysis <img src="data:image/png;base64,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" alt="Cursor" class="cursor-logo" /></div>
+          <div class="node-detail">Cursor Agent / Regex</div>
+        </div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">
+          <span class="node-icon">🖥️</span>
+          <div class="node-label">Browser UI / VS Code</div>
+          <div class="node-detail">localhost:3456</div>
+        </div>
+      </div>
+
+      <div class="arch-features">
+        <div class="feature-pill">
+          <div class="fp-title">Live Log Streaming</div>
+          <div class="fp-desc">Real-time tail with continuous capture</div>
+        </div>
+        <div class="feature-pill">
+          <div class="fp-title">Log Lifecycle Mgmt</div>
+          <div class="fp-desc">Organized .sf-log → Analysis → Archive</div>
+        </div>
+        <div class="feature-pill">
+          <div class="fp-title">AI Error Detection</div>
+          <div class="fp-desc">LLM-powered analysis with regex fallback</div>
+        </div>
+        <div class="feature-pill">
+          <div class="fp-title">Multi-Org Support</div>
+          <div class="fp-desc">Dropdown to switch connected orgs</div>
+        </div>
+        <div class="feature-pill">
+          <div class="fp-title">VS Code Extension</div>
+          <div class="fp-desc">Launch directly inside your IDE</div>
+        </div>
+        <div class="feature-pill">
+          <div class="fp-title">Zero Config</div>
+          <div class="fp-desc">Works with existing SF CLI auth</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ SLIDE 4: DEMO ═══════════════════════ -->
+  <div class="slide" id="slide-3">
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-3"></div>
+
+    <div class="slide-tag">Live Demo</div>
+    <h2 class="section-title">Debugfast in Action</h2>
+
+    <div class="demo-container">
+      <div class="demo-terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <span class="terminal-title">debugfast — apex-log-monitor</span>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <div class="term-line"><span class="term-prompt">❯ </span><span class="term-cmd">node server.js</span></div>
+          <div class="term-line"><span class="term-success">✓ Fixforce running on http://localhost:3456</span></div>
+          <div class="term-line"><span class="term-output">  Connected to org: production-org@company.com</span></div>
+          <div class="term-line"><span class="term-output">  Streaming debug logs...</span></div>
+          <div class="term-line"></div>
+          <div class="term-line"><span class="term-warn">▸ 14:32:01 — APEX_CODE [152 lines captured]</span></div>
+          <div class="term-line"><span class="term-error">✗ FATAL_ERROR: System.NullPointerException</span></div>
+          <div class="term-line"><span class="term-error">  at Class.AccountTriggerHandler.beforeUpdate line 47</span></div>
+          <div class="term-line"></div>
+          <div class="term-line"><span class="term-ai">🤖 AI Analysis:</span></div>
+          <div class="term-line"><span class="term-ai">   Root Cause: Null check missing on Account.ParentId</span></div>
+          <div class="term-line"><span class="term-ai">   Fix: Add guard → if(acc.ParentId != null) before line 47</span></div>
+          <div class="term-line"><span class="term-ai">   Severity: HIGH — affects all Account updates</span></div>
+        </div>
+      </div>
+
+      <div class="demo-steps">
+        <div class="demo-step active-step" onclick="showDemoStep(0)">
+          <div class="step-num">01</div>
+          <div class="step-label">Select Org</div>
+        </div>
+        <div class="demo-step" onclick="showDemoStep(1)">
+          <div class="step-num">02</div>
+          <div class="step-label">Start Audit</div>
+        </div>
+        <div class="demo-step" onclick="showDemoStep(2)">
+          <div class="step-num">03</div>
+          <div class="step-label">AI Analyze</div>
+        </div>
+        <div class="demo-step" onclick="showDemoStep(3)">
+          <div class="step-num">04</div>
+          <div class="step-label">Get Fix</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ SLIDE 5: EXECUTIVE SUMMARY ═══════════════════════ -->
+  <div class="slide" id="slide-4">
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="slide-tag">Executive Summary</div>
+    <h2 class="section-title">Impact & What's Next</h2>
+
+    <div class="summary-grid">
+      <div class="summary-stat">
+        <div class="big-num">10×</div>
+        <div class="stat-text">Faster error identification with AI-powered log analysis</div>
+      </div>
+      <div class="summary-stat">
+        <div class="big-num">Zero</div>
+        <div class="stat-text">Context switching — stream, analyze, and fix all in one place</div>
+      </div>
+      <div class="summary-stat">
+        <div class="big-num">2 min</div>
+        <div class="stat-text">Setup time — plug into any authenticated Salesforce org</div>
+      </div>
+    </div>
+
+    <div class="next-steps">
+      <div class="next-step-item">
+        <div class="ns-bullet"></div>
+        <div class="ns-text"><strong>Governor Limit Monitoring</strong> — Proactive alerts before limits are hit</div>
+      </div>
+      <div class="next-step-item">
+        <div class="ns-bullet"></div>
+        <div class="ns-text"><strong>Salesforce MCP Tool</strong> — Expose diagnostics as a tool via Salesforce MCP for agentic workflows</div>
+      </div>
+      <div class="next-step-item">
+        <div class="ns-bullet"></div>
+        <div class="ns-text"><strong>Fix Suggestions</strong> — AI-generated code patches with one-click apply</div>
+      </div>
+      <div class="next-step-item">
+        <div class="ns-bullet"></div>
+        <div class="ns-text"><strong>Historical Analytics</strong> — Track error trends across deployments and orgs</div>
+      </div>
+    </div>
+
+    <div class="closing-line">
+      <p>DEBUGFAST by TEAM FIXFORCE — DEBUG SMARTER, SHIP FASTER ⚡</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- NAV BAR -->
+<div class="nav-bar" id="navBar"></div>
+
+<script>
+  const TOTAL_SLIDES = 5;
+  let current = 0;
+
+  // Build nav dots
+  const navBar = document.getElementById('navBar');
+  for (let i = 0; i < TOTAL_SLIDES; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goToSlide(i));
+    navBar.appendChild(dot);
+  }
+
+  function goToSlide(n) {
+    if (n < 0 || n >= TOTAL_SLIDES || n === current) return;
+    document.getElementById('slide-' + current).classList.remove('active');
+    navBar.children[current].classList.remove('active');
+    current = n;
+    document.getElementById('slide-' + current).classList.add('active');
+    navBar.children[current].classList.add('active');
+    document.getElementById('slideCounter').textContent =
+      String(current + 1).padStart(2, '0') + ' / ' + String(TOTAL_SLIDES).padStart(2, '0');
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goToSlide(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goToSlide(current - 1); }
+  });
+
+  // Touch / swipe
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 60) {
+      diff > 0 ? goToSlide(current + 1) : goToSlide(current - 1);
+    }
+  });
+
+  // Demo step interactions
+  const demoSteps = [
+    [
+      { type: 'prompt', text: '❯ ' }, { type: 'cmd', text: 'node server.js' }, { type: 'br' },
+      { type: 'success', text: '✓ Debugfast running on http://localhost:3456' }, { type: 'br' },
+      { type: 'output', text: '  Scanning connected orgs...' }, { type: 'br' },
+      { type: 'success', text: '  ✓ Found 3 orgs' }, { type: 'br' },
+      { type: 'output', text: '  → production-org@company.com' }, { type: 'br' },
+      { type: 'output', text: '  → staging-sandbox@company.com' }, { type: 'br' },
+      { type: 'output', text: '  → dev-scratch@company.com' }, { type: 'br' },
+      { type: 'br' },
+      { type: 'success', text: '  Selected: production-org@company.com' },
+    ],
+    [
+      { type: 'prompt', text: '❯ ' }, { type: 'cmd', text: 'Start Audit clicked' }, { type: 'br' },
+      { type: 'success', text: '✓ Debug log stream started' }, { type: 'br' },
+      { type: 'output', text: '  Running: sf apex tail log --color' }, { type: 'br' },
+      { type: 'br' },
+      { type: 'warn', text: '▸ 14:31:58 — USER_DEBUG [DEBUG] Processing 250 accounts' }, { type: 'br' },
+      { type: 'warn', text: '▸ 14:32:01 — APEX_CODE [152 lines captured]' }, { type: 'br' },
+      { type: 'error', text: '✗ FATAL_ERROR: System.NullPointerException' }, { type: 'br' },
+      { type: 'error', text: '  Class.AccountTriggerHandler.beforeUpdate: line 47' }, { type: 'br' },
+      { type: 'warn', text: '▸ 14:32:03 — SOQL_EXECUTE [84 of 100 queries used]' }, { type: 'br' },
+      { type: 'output', text: '  Log rotated → .sf-log (482 KB)' },
+    ],
+    [
+      { type: 'prompt', text: '❯ ' }, { type: 'cmd', text: 'Analyze clicked' }, { type: 'br' },
+      { type: 'output', text: '  Moving logs to .sf-log_Analysis/' }, { type: 'br' },
+      { type: 'success', text: '  ✓ AI Agent connected' }, { type: 'br' },
+      { type: 'br' },
+      { type: 'ai', text: '🤖 AI Analysis Results:' }, { type: 'br' },
+      { type: 'ai', text: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' }, { type: 'br' },
+      { type: 'error', text: '  ❌ CRITICAL: NullPointerException' }, { type: 'br' },
+      { type: 'ai', text: '     File: AccountTriggerHandler.cls' }, { type: 'br' },
+      { type: 'ai', text: '     Line: 47' }, { type: 'br' },
+      { type: 'ai', text: '     Root Cause: Account.ParentId accessed without null check' }, { type: 'br' },
+      { type: 'warn', text: '  ⚠ WARNING: SOQL approaching governor limit (84/100)' },
+    ],
+    [
+      { type: 'ai', text: '🤖 Suggested Fixes:' }, { type: 'br' },
+      { type: 'ai', text: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' }, { type: 'br' },
+      { type: 'br' },
+      { type: 'ai', text: '  Fix #1 — NullPointerException (line 47):' }, { type: 'br' },
+      { type: 'success', text: '  + if(acc.ParentId != null) {' }, { type: 'br' },
+      { type: 'output', text: '      parentMap.get(acc.ParentId);' }, { type: 'br' },
+      { type: 'success', text: '  + }' }, { type: 'br' },
+      { type: 'br' },
+      { type: 'ai', text: '  Fix #2 — SOQL Governor Limit:' }, { type: 'br' },
+      { type: 'success', text: '  + Move query outside for-loop → bulkify' }, { type: 'br' },
+      { type: 'br' },
+      { type: 'success', text: '✓ Analysis complete — 2 issues, 2 fixes suggested' },
+    ],
+  ];
+
+  function showDemoStep(idx) {
+    const body = document.getElementById('terminalBody');
+    body.innerHTML = '';
+
+    // update step buttons
+    document.querySelectorAll('.demo-step').forEach((el, i) => {
+      el.classList.toggle('active-step', i === idx);
+    });
+
+    const lines = demoSteps[idx];
+    let currentLine = document.createElement('div');
+    currentLine.className = 'term-line';
+
+    lines.forEach(token => {
+      if (token.type === 'br') {
+        body.appendChild(currentLine);
+        currentLine = document.createElement('div');
+        currentLine.className = 'term-line';
+      } else {
+        const span = document.createElement('span');
+        span.className = 'term-' + token.type;
+        span.textContent = token.text;
+        currentLine.appendChild(span);
+      }
+    });
+    body.appendChild(currentLine);
+  }
+</script>
+</body>
+</html>
