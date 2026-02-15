@@ -124,7 +124,7 @@
 
   .slide-counter {
     position: fixed;
-    top: 30px;
+    bottom: 30px;
     right: 40px;
     font-family: var(--font-mono);
     font-size: 13px;
@@ -136,7 +136,7 @@
   .key-hint {
     position: fixed;
     bottom: 30px;
-    right: 40px;
+    right: 110px;
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-dim);
@@ -173,10 +173,10 @@
   .active .slide-tag { opacity: 1; transform: translateY(0); }
 
   h1.hero-title {
-    font-size: clamp(48px, 7vw, 96px);
-    font-weight: 900;
-    line-height: 1.0;
-    letter-spacing: -3px;
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2px;
     text-align: center;
     margin-bottom: 16px;
     opacity: 0;
@@ -263,17 +263,23 @@
   .team-card:hover { border-color: rgba(0, 119, 255, 0.3); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1); }
 
   .team-avatar {
-    width: 64px;
-    height: 64px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-    display: flex;
-    align-items: center;
-    justify-content: center;
     margin: 0 auto 16px;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--bg-deep);
+    overflow: hidden;
+    object-fit: cover;
+    border: 2px solid rgba(0, 119, 255, 0.2);
+  }
+
+  .team-avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 16px;
+    border: 2px solid rgba(0, 119, 255, 0.2);
   }
 
   .team-card h3 {
@@ -650,44 +656,26 @@
   }
 
   /* ─── LOGO ─── */
-  .brand-mark {
+  .product-logo {
     position: fixed;
-    top: 28px;
-    left: 40px;
+    top: 16px;
+    left: 24px;
+    height: 44px;
     z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .brand-icon {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: 900;
-    color: var(--bg-deep);
-  }
-
-  .brand-name {
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: -0.5px;
+    opacity: 0.9;
   }
 
   /* ─── LOGOS ─── */
   .sf-logo {
     position: fixed;
-    top: 22px;
-    right: 100px;
-    height: 36px;
+    top: 20px;
+    right: 40px;
+    height: 40px;
     z-index: 100;
-    opacity: 0.85;
-    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.08));
+    opacity: 0.95;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.06));
+    mix-blend-mode: multiply;
+    background: transparent;
   }
 
   .cursor-logo {
@@ -711,14 +699,11 @@
 </head>
 <body>
 
-<div class="brand-mark">
-  <div class="brand-icon">D</div>
-  <span class="brand-name">Debugfast</span>
-</div>
+<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgMTYwIiB3aWR0aD0iNjAwIiBoZWlnaHQ9IjE2MCI+CiAgPGRlZnM+CiAgICA8IS0tIE1haW4gZ3JhZGllbnQgLS0+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJyYW5kR3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwMDc3ZmYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDBjMmZmIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgCiAgICA8IS0tIEljb24gZ3JhZGllbnQgLS0+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9Imljb25HcmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzAwNTJjYyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3R5bGU9InN0b3AtY29sb3I6IzAwNzdmZiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwMGMyZmYiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CgogICAgPCEtLSBQdWxzZSBnbG93IC0tPgogICAgPGZpbHRlciBpZD0iZ2xvdyI+CiAgICAgIDxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjIiIHJlc3VsdD0iY29sb3JlZEJsdXIiLz4KICAgICAgPGZlTWVyZ2U+CiAgICAgICAgPGZlTWVyZ2VOb2RlIGluPSJjb2xvcmVkQmx1ciIvPgogICAgICAgIDxmZU1lcmdlTm9kZSBpbj0iU291cmNlR3JhcGhpYyIvPgogICAgICA8L2ZlTWVyZ2U+CiAgICA8L2ZpbHRlcj4KCiAgICA8IS0tIFN1YnRsZSBzaGFkb3cgLS0+CiAgICA8ZmlsdGVyIGlkPSJzaGFkb3ciIHg9Ii0xMCUiIHk9Ii0xMCUiIHdpZHRoPSIxMjAlIiBoZWlnaHQ9IjEyMCUiPgogICAgICA8ZmVEcm9wU2hhZG93IGR4PSIwIiBkeT0iMiIgc3RkRGV2aWF0aW9uPSI0IiBmbG9vZC1jb2xvcj0iIzAwNzdmZiIgZmxvb2Qtb3BhY2l0eT0iMC4xNSIvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgoKICA8IS0tID09PSBJQ09OOiBTaGllbGQgKyBCdWcgKyBMaWdodG5pbmcgPT09IC0tPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIwLCA4KSIgZmlsdGVyPSJ1cmwoI3NoYWRvdykiPgogICAgPCEtLSBTaGllbGQgc2hhcGUgLS0+CiAgICA8cGF0aCBkPSJNNzIgOCBMMTMyIDI4IEwxMzIgNzYgQzEzMiAxMDggMTA0IDEzNCA3MiAxNDQgQzQwIDEzNCAxMiAxMDggMTIgNzYgTDEyIDI4IFoiIAogICAgICAgICAgZmlsbD0idXJsKCNpY29uR3JhZCkiIG9wYWNpdHk9IjAuMSIgc3Ryb2tlPSJ1cmwoI2ljb25HcmFkKSIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICAgIAogICAgPCEtLSBJbm5lciBzaGllbGQgaGlnaGxpZ2h0IC0tPgogICAgPHBhdGggZD0iTTcyIDE4IEwxMjIgMzUgTDEyMiA3NiBDMTIyIDEwMiA5OCAxMjQgNzIgMTMzIEM0NiAxMjQgMjIgMTAyIDIyIDc2IEwyMiAzNSBaIiAKICAgICAgICAgIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNicmFuZEdyYWQpIiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjAuMyIvPgoKICAgIDwhLS0gQnVnIGljb24gKGNpcmNsZSBib2R5ICsgYW50ZW5uYWUpIC0tPgogICAgPGVsbGlwc2UgY3g9IjcyIiBjeT0iNzgiIHJ4PSIyMiIgcnk9IjI2IiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjYnJhbmRHcmFkKSIgc3Ryb2tlLXdpZHRoPSIyLjUiIG9wYWNpdHk9IjAuNyIvPgogICAgPCEtLSBCdWcgc2VnbWVudHMgLS0+CiAgICA8bGluZSB4MT0iNTAiIHkxPSI3MiIgeDI9Ijk0IiB5Mj0iNzIiIHN0cm9rZT0idXJsKCNicmFuZEdyYWQpIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC41Ii8+CiAgICA8bGluZSB4MT0iNTAiIHkxPSI4NCIgeDI9Ijk0IiB5Mj0iODQiIHN0cm9rZT0idXJsKCNicmFuZEdyYWQpIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC41Ii8+CiAgICA8IS0tIEJ1ZyBsZWdzIGxlZnQgLS0+CiAgICA8bGluZSB4MT0iNTAiIHkxPSI2OCIgeDI9IjM4IiB5Mj0iNTgiIHN0cm9rZT0idXJsKCNicmFuZEdyYWQpIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNSIvPgogICAgPGxpbmUgeDE9IjUwIiB5MT0iNzgiIHgyPSIzNiIgeTI9Ijc4IiBzdHJva2U9InVybCgjYnJhbmRHcmFkKSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjUiLz4KICAgIDxsaW5lIHgxPSI1MCIgeTE9Ijg4IiB4Mj0iMzgiIHkyPSI5OCIgc3Ryb2tlPSJ1cmwoI2JyYW5kR3JhZCkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC41Ii8+CiAgICA8IS0tIEJ1ZyBsZWdzIHJpZ2h0IC0tPgogICAgPGxpbmUgeDE9Ijk0IiB5MT0iNjgiIHgyPSIxMDYiIHkyPSI1OCIgc3Ryb2tlPSJ1cmwoI2JyYW5kR3JhZCkiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC41Ii8+CiAgICA8bGluZSB4MT0iOTQiIHkxPSI3OCIgeDI9IjEwOCIgeTI9Ijc4IiBzdHJva2U9InVybCgjYnJhbmRHcmFkKSIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjUiLz4KICAgIDxsaW5lIHgxPSI5NCIgeTE9Ijg4IiB4Mj0iMTA2IiB5Mj0iOTgiIHN0cm9rZT0idXJsKCNicmFuZEdyYWQpIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNSIvPgogICAgPCEtLSBBbnRlbm5hZSAtLT4KICAgIDxwYXRoIGQ9Ik02MiA1NCBRNTggMzggNDggMzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNicmFuZEdyYWQpIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogICAgPGNpcmNsZSBjeD0iNDciIGN5PSIzMSIgcj0iMyIgZmlsbD0idXJsKCNicmFuZEdyYWQpIiBvcGFjaXR5PSIwLjYiLz4KICAgIDxwYXRoIGQ9Ik04MiA1NCBRODYgMzggOTYgMzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNicmFuZEdyYWQpIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogICAgPGNpcmNsZSBjeD0iOTciIGN5PSIzMSIgcj0iMyIgZmlsbD0idXJsKCNicmFuZEdyYWQpIiBvcGFjaXR5PSIwLjYiLz4KICAgIAogICAgPCEtLSBMaWdodG5pbmcgYm9sdCAoZmFzdCEpIG92ZXJsYWlkIG9uIGJ1ZyAtLT4KICAgIDxwYXRoIGQ9Ik03OCA1OCBMNjggNzggTDc2IDc4IEw2NiAxMDAgTDg2IDcyIEw3OCA3MiBaIiAKICAgICAgICAgIGZpbGw9InVybCgjYnJhbmRHcmFkKSIgZmlsdGVyPSJ1cmwoI2dsb3cpIiBvcGFjaXR5PSIwLjk1Ii8+CiAgPC9nPgoKICA8IS0tID09PSBXT1JETUFSSyA9PT0gLS0+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTcwLCAwKSI+CiAgICA8IS0tICJEZWJ1Z2Zhc3QiIGFzIG9uZSB3b3JkIC0gIkRlYnVnIiBpbiBkYXJrLCAiZmFzdCIgaW4gZ3JhZGllbnQgLS0+CiAgICA8dGV4dCB4PSIwIiB5PSIxMDIiIGZvbnQtZmFtaWx5PSInU2Vnb2UgVUknLCAnSGVsdmV0aWNhIE5ldWUnLCBBcmlhbCwgc2Fucy1zZXJpZiIgCiAgICAgICAgICBmb250LXNpemU9IjcyIiBmb250LXdlaWdodD0iODAwIiBsZXR0ZXItc3BhY2luZz0iLTMiIGZpbGw9IiMxYTIyMzMiPkRlYnVnPHRzcGFuIGZpbGw9InVybCgjYnJhbmRHcmFkKSI+ZmFzdDwvdHNwYW4+PC90ZXh0PgogIDwvZz4KCiAgPCEtLSA9PT0gVEFHTElORSA9PT0gLS0+CiAgPHRleHQgeD0iMTcyIiB5PSIxMzAiIGZvbnQtZmFtaWx5PSInQ29uc29sYXMnLCAnQ291cmllciBOZXcnLCBtb25vc3BhY2UiIAogICAgICAgIGZvbnQtc2l6ZT0iMTQiIGxldHRlci1zcGFjaW5nPSIzIiBmaWxsPSIjNWE2YTdlIiBvcGFjaXR5PSIwLjgiPgogICAgQUktUE9XRVJFRCBTQUxFU0ZPUkNFIExPRyBBTkFMWVNJUzwvdGV4dD4KCiAgPCEtLSBBY2NlbnQgZG90IC0tPgogIDxjaXJjbGUgY3g9IjE3MCIgY3k9IjEyNiIgcj0iMyIgZmlsbD0idXJsKCNicmFuZEdyYWQpIiBvcGFjaXR5PSIwLjYiLz4KCjwvc3ZnPgo=" alt="Debugfast" class="product-logo" />
 
 <div class="slide-counter" id="slideCounter">01 / 05</div>
 
-<img src="data:image/png;base64,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" alt="Salesforce" class="sf-logo" />
+<img src="salesforce.jpeg" alt="Salesforce" class="sf-logo" />
 
 <div class="key-hint">
   <kbd>←</kbd><kbd>→</kbd> or click to navigate
@@ -744,19 +729,19 @@
 
     <div class="team-grid">
       <div class="team-card">
-        <div class="team-avatar">RS</div>
+        <img src="Rajesh Sahoo.png" alt="Rajesh Sahoo" class="team-avatar-img" />
         <h3>Rajesh Sahoo</h3>
-        <div class="role">Developer</div>
+        <div class="role">Forward Deployed Engineer</div>
       </div>
       <div class="team-card">
-        <div class="team-avatar">RB</div>
+        <img src="Rajesh Boddu.jpeg" alt="Rajesh Boddu" class="team-avatar-img" />
         <h3>Rajesh Boddu</h3>
-        <div class="role">Developer</div>
+        <div class="role">Forward Deployed Engineer</div>
       </div>
       <div class="team-card">
-        <div class="team-avatar">SM</div>
+        <img src="Sai.jpeg" alt="Sai Srinivasu Mallela" class="team-avatar-img" />
         <h3>Sai Srinivasu Mallela</h3>
-        <div class="role">Developer</div>
+        <div class="role">Forward Deployed Engineer</div>
       </div>
     </div>
   </div>
@@ -877,7 +862,7 @@
         <div class="terminal-body" id="terminalBody">
           <div class="term-line"><span class="term-prompt">❯ </span><span class="term-cmd">node server.js</span></div>
           <div class="term-line"><span class="term-success">✓ Fixforce running on http://localhost:3456</span></div>
-          <div class="term-line"><span class="term-output">  Connected to org: production-org@company.com</span></div>
+          <div class="term-line"><span class="term-output">  Connected to org: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff8f8d909b8a9c8b969091d2908d98bf9c90928f9e9186d19c9092">[email&#160;protected]</a></span></div>
           <div class="term-line"><span class="term-output">  Streaming debug logs...</span></div>
           <div class="term-line"></div>
           <div class="term-line"><span class="term-warn">▸ 14:32:01 — APEX_CODE [152 lines captured]</span></div>
